@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400&amp;family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&amp;display=swap" rel="stylesheet">
+  <style>
+    body { margin:0; background:#EDE7D8; overscroll-behavior:none; -webkit-text-size-adjust:100%; }
+    body { --st: env(safe-area-inset-top, 0px); --sb: env(safe-area-inset-bottom, 0px); }
+    *, *::before, *::after { box-sizing:border-box; }
+    ::selection { background: #B08D5744; }
+    ::-webkit-scrollbar { width:0; height:0; }
+  </style>
+  <link rel="manifest" href="./manifest.json">
+  <link rel="apple-touch-icon" href="./icon-180.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Garden">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="theme-color" content="#3A5A40">
+  <meta http-equiv="Cache-Control" content="no-store">
+  <script src="./image-slot.js"></script>
+</helmet>
+
+<div style="height:100dvh; width:100%; display:flex; flex-direction:column; background:#EDE7D8; font-family:'EB Garamond',serif; color:#22291D; position:relative; overflow-x:hidden; max-width:100%;">
+
+    <!-- ============ DETAIL SCREEN ============ -->
+    <sc-if value="{{ detail }}" hint-placeholder-val="{{ false }}">
+      <div style="flex:1; overflow:auto; padding-bottom:24px; padding-top:calc(var(--st) + 12px);">
+        <div style="position:sticky; top:0; z-index:5; background:#EDE7D8; display:flex; align-items:center; gap:10px; padding:calc(var(--st) + 12px) 16px 10px; margin-top:calc(-1 * (var(--st) + 12px)); border-bottom:1px solid #C9BE9E;">
+          <div onClick="{{ detail.onBack }}" style="width:34px; height:34px; border-radius:50%; background:#E4DCC2; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;">
+            <svg width="9" height="15" viewBox="0 0 9 15" fill="none"><path d="M7.5 1.5L1.5 7.5L7.5 13.5" stroke="#22291D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div style="font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:#6B5A3A;">{{ detail.category }}</div>
+        </div>
+
+        <div style="padding:6px 18px 0;">
+          <h1 style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:34px; margin:8px 0 2px; line-height:1.05;">{{ detail.name }}</h1>
+          <div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:15px; color:#3A5A40; margin-bottom:14px;">{{ detail.sci }}</div>
+
+          <image-slot id="{{ detail.photoSlotId }}" src="{{ detail.photo }}" shape="rounded" radius="14" placeholder="Drop a photo of this plant" style="width:100%; height:180px; display:block; margin-bottom:16px;"></image-slot>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px 14px; margin-bottom:16px;">
+            <sc-for list="{{ detail.facts }}" as="f" hint-placeholder-count="4">
+              <div style="border-top:2px solid {{ accent }}; padding-top:5px;">
+                <div style="font-size:10px; letter-spacing:0.13em; text-transform:uppercase; color:#6B5A3A;">{{ f.l }}</div>
+                <div style="font-size:13.5px; line-height:1.3;">{{ f.v }}</div>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="background:#E4DCC2; border:1px solid #B7A97E; border-radius:10px; padding:12px 14px; margin-bottom:20px;">
+            <div style="font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:#6B5A3A; margin-bottom:8px;">Care calendar</div>
+            <sc-for list="{{ detail.tasksStatus }}" as="t" hint-placeholder-count="2">
+              <div style="border-bottom:1px solid #D7CBA6; padding:6px 0;">
+                <div onClick="{{ t.onExpand }}" style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                  <div style="flex:1; min-width:0;">
+                    <div style="font-size:13.5px; font-weight:600;">{{ t.label }}</div>
+                    <div style="font-size:12px; color:#6B5A3A;">{{ t.range }}</div>
+                  </div>
+                  <div style="font-size:10.5px; padding:3px 8px; border-radius:20px; background:{{ t.badgeBg }}; color:{{ t.badgeFg }}; white-space:nowrap;">{{ t.badgeText }}</div>
+                  <sc-if value="{{ detail.inGarden }}" hint-placeholder-val="{{ false }}">
+                    <div onClick="{{ t.onToggle }}" style="width:22px; height:22px; border-radius:50%; border:1.5px solid {{ accent }}; background:{{ t.checkBg }}; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;">
+                      <sc-if value="{{ t.isDone }}" hint-placeholder-val="{{ false }}"><svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></sc-if>
+                    </div>
+                  </sc-if>
+                </div>
+                <sc-if value="{{ t.expanded }}" hint-placeholder-val="{{ false }}">
+                  <div style="font-size:13px; line-height:1.5; color:#3A4A2E; padding:8px 2px 4px;">{{ t.how }}</div>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+
+          <sc-if value="{{ detail.hasPlanting }}" hint-placeholder-val="{{ true }}">
+            <h2 style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:19px; border-bottom:1px solid #C9BE9E; padding-bottom:5px; margin:18px 0 8px;">Planting</h2>
+            <ol style="font-size:14px; line-height:1.55; padding-left:18px; margin:6px 0;">
+              <sc-for list="{{ detail.planting }}" as="step" hint-placeholder-count="4"><li style="margin-bottom:4px;">{{ step }}</li></sc-for>
+            </ol>
+          </sc-if>
+
+          <sc-if value="{{ detail.hasOngoing }}" hint-placeholder-val="{{ true }}">
+            <h2 style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:19px; border-bottom:1px solid #C9BE9E; padding-bottom:5px; margin:18px 0 8px;">Ongoing care</h2>
+            <p style="font-size:14px; line-height:1.55; margin:6px 0;">{{ detail.ongoing }}</p>
+          </sc-if>
+
+          <sc-if value="{{ detail.hasPests }}" hint-placeholder-val="{{ true }}">
+            <h2 style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:19px; border-bottom:1px solid #C9BE9E; padding-bottom:5px; margin:18px 0 8px;">Pests &amp; troubleshooting</h2>
+            <div style="display:flex; flex-direction:column; gap:10px; margin:8px 0;">
+              <sc-for list="{{ detail.pests }}" as="p" hint-placeholder-count="4">
+                <div><div style="font-weight:600; font-size:13.5px;">{{ p.issue }}</div><div style="font-size:13px; color:#3A4A2E;">{{ p.fix }}</div></div>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ detail.hasHarvest }}" hint-placeholder-val="{{ true }}">
+            <h2 style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:19px; border-bottom:1px solid #C9BE9E; padding-bottom:5px; margin:18px 0 8px;">{{ detail.harvestLabel }}</h2>
+            <p style="font-size:14px; line-height:1.55; margin:6px 0 20px;">{{ detail.harvest }}</p>
+          </sc-if>
+
+          <sc-if value="{{ detail.inGarden }}" hint-placeholder-val="{{ false }}">
+            <sc-if value="{{ detail.removing }}" hint-placeholder-val="{{ false }}">
+              <div style="border:1px solid #C9BE9E; border-radius:10px; padding:12px; margin-bottom:10px; display:flex; flex-direction:column; gap:8px;">
+                <div style="font-size:12.5px; color:#6B5A3A;">Add a note (optional) — why is this plant being removed?</div>
+                <textarea value="{{ detail.removeDraft }}" onInput="{{ detail.onRemoveDraftInput }}" placeholder="e.g. Didn't survive the winter" style="width:100%; box-sizing:border-box; border:1px solid #C9BE9E; background:#F4EFDF; border-radius:8px; padding:8px 10px; font-size:13.5px; font-family:'EB Garamond',serif; color:#22291D; resize:vertical; min-height:60px;"></textarea>
+                <div style="display:flex; gap:8px;">
+                  <div onClick="{{ detail.onConfirmRemove }}" style="flex:1; text-align:center; padding:11px; border-radius:10px; background:#8B4A3A; color:#fff; font-size:13.5px; font-weight:600; cursor:pointer;">Move to history</div>
+                  <div onClick="{{ detail.onCancelRemove }}" style="flex:1; text-align:center; padding:11px; border-radius:10px; border:1px solid #C9BE9E; color:#6B5A3A; font-size:13.5px; cursor:pointer;">Cancel</div>
+                </div>
+                <div onClick="{{ detail.onDeleteForever }}" style="text-align:center; font-size:12.5px; color:#8B4A3A; text-decoration:underline; cursor:pointer; padding:2px 0;">Delete permanently instead</div>
+              </div>
+            </sc-if>
+            <sc-if value="{{ detail.notRemoving }}" hint-placeholder-val="{{ true }}">
+              <div onClick="{{ detail.onStartRemove }}" style="text-align:center; padding:13px; border-radius:10px; border:1.5px solid #8B4A3A; color:#8B4A3A; font-size:14px; font-weight:600; cursor:pointer;">Remove from garden</div>
+            </sc-if>
+          </sc-if>
+          <sc-if value="{{ detail.showAdd }}" hint-placeholder-val="{{ false }}">
+            <div onClick="{{ detail.onAdd }}" style="text-align:center; padding:13px; border-radius:10px; background:{{ accent }}; color:#fff; font-size:14px; font-weight:600; cursor:pointer;">{{ detail.addLabel }}</div>
+          </sc-if>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ============ TAB SCREENS ============ -->
+    <sc-if value="{{ noDetail }}" hint-placeholder-val="{{ true }}">
+      <div style="flex:1; overflow:auto; padding-top:calc(var(--st) + 12px);">
+
+        <!-- GARDEN -->
+        <sc-if value="{{ isGarden }}" hint-placeholder-val="{{ true }}">
+          <div style="padding:8px 16px 8px; display:flex; align-items:flex-start; justify-content:space-between; gap:12px;">
+            <div style="min-width:0;">
+              <h1 style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:30px; margin:0;">My Garden</h1>
+              <div style="font-size:13px; color:#6B5A3A; margin-top:2px;">{{ gardenCountText }}</div>
+            </div>
+            <div onClick="{{ goAdd }}" style="display:flex; align-items:center; gap:6px; background:{{ accent }}; color:#fff; padding:8px 13px; border-radius:20px; cursor:pointer; flex-shrink:0; margin-top:6px;">
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1V12M1 6.5H12" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+              <span style="font-size:13px; font-weight:600;">Add</span>
+            </div>
+          </div>
+          <sc-if value="{{ showAlert }}" hint-placeholder-val="{{ false }}">
+            <div style="margin:0 16px 12px; display:flex; align-items:center; gap:11px; background:#F4EFDF; border:1px solid #C8A99E; border-left:4px solid #C8402F; border-radius:12px; padding:11px 12px;">
+              <div onClick="{{ onAlertOpen }}" style="flex:1; min-width:0; display:flex; align-items:center; gap:11px; cursor:pointer;">
+                <div style="width:30px; height:30px; border-radius:50%; background:#C8402F; color:#fff; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:600; flex-shrink:0;">{{ remBadgeCount }}</div>
+                <div style="min-width:0;">
+                  <div style="font-size:14.5px; font-weight:600;">{{ alertTitle }}</div>
+                  <div style="font-size:12.5px; color:#6B5A3A;">{{ alertSub }}</div>
+                </div>
+              </div>
+              <div onClick="{{ onAlertDismiss }}" style="width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;">
+                <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M1 1L10 10M10 1L1 10" stroke="#9C9276" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </div>
+            </div>
+          </sc-if>
+          <div style="padding:6px 16px 16px; display:flex; flex-direction:column; gap:18px;">
+            <sc-for list="{{ gardenGroups }}" as="grp" hint-placeholder-count="3">
+              <div style="display:flex; flex-direction:column; gap:10px;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <div style="width:8px; height:8px; border-radius:50%; background:{{ grp.color }}; flex-shrink:0;"></div>
+                  <div style="font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#6B5A3A;">{{ grp.category }}</div>
+                  <div style="flex:1; height:1px; background:#D7CBA6;"></div>
+                  <div style="font-size:11px; color:#9C9276; flex-shrink:0;">{{ grp.count }}</div>
+                </div>
+                <sc-for list="{{ grp.plants }}" as="g" hint-placeholder-count="3">
+                  <div onClick="{{ g.onOpen }}" style="display:flex; align-items:center; gap:12px; background:#F4EFDF; border:1px solid #D7CBA6; border-radius:12px; padding:10px 12px; cursor:pointer;">
+                    <div style="width:44px; height:44px; border-radius:50%; background:{{ g.catColor }}; color:#fff; display:flex; align-items:center; justify-content:center; font-family:'Cormorant Garamond',serif; font-size:19px; font-weight:600; flex-shrink:0;">{{ g.initial }}</div>
+                    <div style="flex:1; min-width:0;">
+                      <div style="font-size:15.5px; font-weight:600;">{{ g.name }}</div>
+                      <div style="font-size:12.5px; color:{{ g.badgeColor }};">{{ g.badgeText }}</div>
+                    </div>
+                    <svg width="7" height="12" viewBox="0 0 7 12" fill="none" style="flex-shrink:0;"><path d="M1 1L6 6L1 11" stroke="#9C9276" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-for>
+            <sc-if value="{{ noGarden }}" hint-placeholder-val="{{ false }}">
+              <div style="text-align:center; padding:44px 20px; color:#6B5A3A; font-size:14px; line-height:1.6;">Your garden is empty.<br>Tap <strong>Add</strong> to plant something.</div>
+            </sc-if>
+            <sc-if value="{{ showInstallCard }}" hint-placeholder-val="{{ false }}">
+              <div style="border:1px solid #B7A97E; background:#E4DCC2; border-radius:12px; padding:12px 13px; display:flex; flex-direction:column; gap:9px;">
+                <div style="display:flex; align-items:flex-start; gap:10px;">
+                  <div style="width:34px; height:34px; border-radius:8px; background:#3A5A40; color:#EDE7D8; display:flex; align-items:center; justify-content:center; font-family:'Cormorant Garamond',serif; font-size:19px; font-weight:600; flex-shrink:0; position:relative;">G
+                    <div style="position:absolute; top:-5px; right:-5px; min-width:16px; height:16px; padding:0 4px; border-radius:8px; background:#C8402F; color:#fff; font-size:10px; font-weight:600; display:flex; align-items:center; justify-content:center; line-height:1;">{{ remBadgeCount }}</div>
+                  </div>
+                  <div style="flex:1; min-width:0;">
+                    <div style="font-size:14.5px; font-weight:600;">{{ installTitle }}</div>
+                    <div style="font-size:12.5px; color:#5A4B2E; line-height:1.45; margin-top:2px;">{{ installBody }}</div>
+                  </div>
+                  <div onClick="{{ onDismissInstall }}" style="width:22px; height:22px; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;">
+                    <svg width="10" height="10" viewBox="0 0 11 11" fill="none"><path d="M1 1L10 10M10 1L1 10" stroke="#9C9276" stroke-width="1.8" stroke-linecap="round"/></svg>
+                  </div>
+                </div>
+                <div onClick="{{ onEnableNotify }}" style="text-align:center; padding:10px; border-radius:9px; background:{{ accent }}; color:#fff; font-size:13.5px; font-weight:600; cursor:pointer;">{{ installCta }}</div>
+              </div>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <!-- ADD PLANT -->
+        <sc-if value="{{ isAdd }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:14px 16px 8px; display:flex; align-items:center; gap:10px;">
+            <div onClick="{{ backFromAdd }}" style="width:34px; height:34px; border-radius:50%; background:#E4DCC2; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;">
+              <svg width="9" height="15" viewBox="0 0 9 15" fill="none"><path d="M7.5 1.5L1.5 7.5L7.5 13.5" stroke="#22291D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <h1 style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:27px; margin:0;">Add a plant</h1>
+          </div>
+
+          <sc-if value="{{ formClosed }}" hint-placeholder-val="{{ true }}">
+            <div style="padding:6px 16px 20px; display:flex; flex-direction:column; gap:10px;">
+              <div onClick="{{ onOpenForm }}" style="display:flex; align-items:center; gap:10px; border:1.5px dashed #B7A97E; border-radius:12px; padding:13px 14px; cursor:pointer;">
+                <div style="width:36px; height:36px; border-radius:50%; border:1.5px solid {{ accent }}; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                  <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1V12M1 6.5H12" stroke="#B08D57" stroke-width="2" stroke-linecap="round"/></svg>
+                </div>
+                <div style="min-width:0;">
+                  <div style="font-size:15px; font-weight:600;">Create a new plant</div>
+                  <div style="font-size:12.5px; color:#6B5A3A;">Your own name, notes and care tasks</div>
+                </div>
+              </div>
+
+              <div style="font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#6B5A3A; margin:12px 0 0;">From the guide</div>
+              <sc-for list="{{ addable }}" as="a" hint-placeholder-count="4">
+                <div style="display:flex; align-items:center; gap:12px; background:#F4EFDF; border:1px solid #D7CBA6; border-radius:12px; padding:10px 12px;">
+                  <div style="width:40px; height:40px; border-radius:50%; background:{{ a.catColor }}; color:#fff; display:flex; align-items:center; justify-content:center; font-family:'Cormorant Garamond',serif; font-size:18px; font-weight:600; flex-shrink:0;">{{ a.initial }}</div>
+                  <div style="flex:1; min-width:0;">
+                    <div style="font-size:15px; font-weight:600;">{{ a.name }}</div>
+                    <div style="font-size:12px; color:#3A5A40; font-style:italic;">{{ a.sci }}</div>
+                  </div>
+                  <div onClick="{{ a.onAdd }}" style="font-size:12.5px; font-weight:600; color:#fff; background:{{ accent }}; padding:7px 13px; border-radius:8px; cursor:pointer; flex-shrink:0;">Add</div>
+                </div>
+              </sc-for>
+              <sc-if value="{{ noAddable }}" hint-placeholder-val="{{ false }}">
+                <div style="text-align:center; padding:24px 20px; color:#6B5A3A; font-size:13.5px;">Every plant in the guide is already in your garden.</div>
+              </sc-if>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ showForm }}" hint-placeholder-val="{{ false }}">
+            <div style="padding:6px 16px 24px; display:flex; flex-direction:column; gap:12px;">
+              <div style="display:flex; flex-direction:column; gap:4px;">
+                <label style="font-size:11px; letter-spacing:0.13em; text-transform:uppercase; color:#6B5A3A;">Plant name</label>
+                <div style="display:flex; gap:8px;">
+                  <input value="{{ fName }}" onInput="{{ onFName }}" placeholder="e.g. Sugar Snap Peas" style="flex:1; min-width:0; border:1px solid #C9BE9E; background:#F4EFDF; border-radius:8px; padding:9px 11px; font-size:14.5px; font-family:'EB Garamond',serif; color:#22291D;">
+                  <sc-if value="{{ lookupIdle }}" hint-placeholder-val="{{ true }}">
+                    <div onClick="{{ onLookup }}" style="flex-shrink:0; display:flex; align-items:center; padding:0 14px; border-radius:8px; background:{{ accent }}; color:#fff; font-size:13px; font-weight:600; cursor:pointer; opacity:{{ lookupOpacity }};">Fill in</div>
+                  </sc-if>
+                  <sc-if value="{{ lookupLoading }}" hint-placeholder-val="{{ false }}">
+                    <div style="flex-shrink:0; display:flex; align-items:center; padding:0 14px; border-radius:8px; background:#E4DCC2; color:#6B5A3A; font-size:13px;">Looking up…</div>
+                  </sc-if>
+                </div>
+                <sc-if value="{{ lookupDone }}" hint-placeholder-val="{{ false }}">
+                  <div style="font-size:12px; color:#3A5A40;">Filled in below — check it over, then save.</div>
+                </sc-if>
+                <sc-if value="{{ lookupHasError }}" hint-placeholder-val="{{ false }}">
+                  <div style="font-size:12px; color:#8B4A3A;">{{ lookupError }}</div>
+                </sc-if>
+              </div>
+              <div style="display:flex; flex-direction:column; gap:4px;">
+                <label style="font-size:11px; letter-spacing:0.13em; text-transform:uppercase; color:#6B5A3A;">Botanical name</label>
+                <input value="{{ fSci }}" onInput="{{ onFSci }}" placeholder="Optional" style="width:100%; border:1px solid #C9BE9E; background:#F4EFDF; border-radius:8px; padding:9px 11px; font-size:14px; font-family:'EB Garamond',serif; font-style:italic; color:#22291D;">
+              </div>
+              <div style="display:flex; flex-direction:column; gap:4px;">
+                <label style="font-size:11px; letter-spacing:0.13em; text-transform:uppercase; color:#6B5A3A;">Category</label>
+                <select value="{{ fCategory }}" onChange="{{ onFCategory }}" style="width:100%; border:1px solid #C9BE9E; background:#F4EFDF; border-radius:8px; padding:9px 11px; font-size:14px; font-family:'EB Garamond',serif; color:#22291D;">
+                  <sc-for list="{{ categoryOptions }}" as="c" hint-placeholder-count="5"><option value="{{ c }}">{{ c }}</option></sc-for>
+                </select>
+              </div>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                <div style="display:flex; flex-direction:column; gap:4px;">
+                  <label style="font-size:11px; letter-spacing:0.13em; text-transform:uppercase; color:#6B5A3A;">Light</label>
+                  <input value="{{ fLight }}" onInput="{{ onFLight }}" placeholder="Full sun" style="width:100%; border:1px solid #C9BE9E; background:#F4EFDF; border-radius:8px; padding:8px 10px; font-size:13.5px; font-family:'EB Garamond',serif; color:#22291D;">
+                </div>
+                <div style="display:flex; flex-direction:column; gap:4px;">
+                  <label style="font-size:11px; letter-spacing:0.13em; text-transform:uppercase; color:#6B5A3A;">Water</label>
+                  <input value="{{ fWater }}" onInput="{{ onFWater }}" placeholder="1 in./week" style="width:100%; border:1px solid #C9BE9E; background:#F4EFDF; border-radius:8px; padding:8px 10px; font-size:13.5px; font-family:'EB Garamond',serif; color:#22291D;">
+                </div>
+                <div style="display:flex; flex-direction:column; gap:4px;">
+                  <label style="font-size:11px; letter-spacing:0.13em; text-transform:uppercase; color:#6B5A3A;">Soil</label>
+                  <input value="{{ fSoil }}" onInput="{{ onFSoil }}" placeholder="Well-drained" style="width:100%; border:1px solid #C9BE9E; background:#F4EFDF; border-radius:8px; padding:8px 10px; font-size:13.5px; font-family:'EB Garamond',serif; color:#22291D;">
+                </div>
+                <div style="display:flex; flex-direction:column; gap:4px;">
+                  <label style="font-size:11px; letter-spacing:0.13em; text-transform:uppercase; color:#6B5A3A;">Spacing</label>
+                  <input value="{{ fSpacing }}" onInput="{{ onFSpacing }}" placeholder="12 in. apart" style="width:100%; border:1px solid #C9BE9E; background:#F4EFDF; border-radius:8px; padding:8px 10px; font-size:13.5px; font-family:'EB Garamond',serif; color:#22291D;">
+                </div>
+              </div>
+              <div style="display:flex; flex-direction:column; gap:4px;">
+                <label style="font-size:11px; letter-spacing:0.13em; text-transform:uppercase; color:#6B5A3A;">Ongoing care notes</label>
+                <textarea value="{{ fOngoing }}" onInput="{{ onFOngoing }}" placeholder="Anything you want to remember about this plant" style="width:100%; border:1px solid #C9BE9E; background:#F4EFDF; border-radius:8px; padding:9px 11px; font-size:13.5px; font-family:'EB Garamond',serif; color:#22291D; resize:vertical; min-height:64px;"></textarea>
+              </div>
+
+              <div style="font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#6B5A3A; margin-top:4px;">Care tasks</div>
+              <sc-for list="{{ formTasks }}" as="t" hint-placeholder-count="1">
+                <div style="border:1px solid #D7CBA6; background:#F4EFDF; border-radius:10px; padding:11px 12px; display:flex; flex-direction:column; gap:8px;">
+                  <div style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
+                    <div style="font-size:11px; letter-spacing:0.13em; text-transform:uppercase; color:#6B5A3A;">{{ t.num }}</div>
+                    <div onClick="{{ t.onRemove }}" style="font-size:11.5px; color:#8B4A3A; cursor:pointer;">Remove</div>
+                  </div>
+                  <input value="{{ t.label }}" onInput="{{ t.onLabel }}" placeholder="e.g. Sow seeds outdoors" style="width:100%; border:1px solid #C9BE9E; background:#fff; border-radius:8px; padding:8px 10px; font-size:13.5px; font-family:'EB Garamond',serif; color:#22291D;">
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <select value="{{ t.sm }}" onChange="{{ t.onStart }}" style="flex:1; min-width:0; border:1px solid #C9BE9E; background:#fff; border-radius:8px; padding:8px; font-size:13px; font-family:'EB Garamond',serif; color:#22291D;">
+                      <sc-for list="{{ monthOptions }}" as="m" hint-placeholder-count="12"><option value="{{ m.v }}">{{ m.n }}</option></sc-for>
+                    </select>
+                    <span style="font-size:13px; color:#6B5A3A; flex-shrink:0;">to</span>
+                    <select value="{{ t.em }}" onChange="{{ t.onEnd }}" style="flex:1; min-width:0; border:1px solid #C9BE9E; background:#fff; border-radius:8px; padding:8px; font-size:13px; font-family:'EB Garamond',serif; color:#22291D;">
+                      <sc-for list="{{ monthOptions }}" as="m" hint-placeholder-count="12"><option value="{{ m.v }}">{{ m.n }}</option></sc-for>
+                    </select>
+                  </div>
+                  <textarea value="{{ t.how }}" onInput="{{ t.onHow }}" placeholder="How to do it (shown when you tap the reminder)" style="width:100%; border:1px solid #C9BE9E; background:#fff; border-radius:8px; padding:8px 10px; font-size:13px; font-family:'EB Garamond',serif; color:#22291D; resize:vertical; min-height:52px;"></textarea>
+                </div>
+              </sc-for>
+              <div onClick="{{ onAddTaskRow }}" style="text-align:center; padding:9px; border-radius:9px; border:1px dashed #B7A97E; color:#6B5A3A; font-size:13px; cursor:pointer;">+ Add another task</div>
+
+              <div style="display:flex; gap:8px; margin-top:6px;">
+                <div onClick="{{ onSaveCustom }}" style="flex:1; text-align:center; padding:13px; border-radius:10px; background:{{ accent }}; color:#fff; font-size:14px; font-weight:600; cursor:pointer;">Save to my garden</div>
+                <div onClick="{{ onCloseForm }}" style="flex:0 0 auto; text-align:center; padding:13px 18px; border-radius:10px; border:1px solid #C9BE9E; color:#6B5A3A; font-size:14px; cursor:pointer;">Cancel</div>
+              </div>
+            </div>
+          </sc-if>
+        </sc-if>
+
+        <!-- REMINDERS -->
+        <sc-if value="{{ isReminders }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:18px 16px 8px;">
+            <h1 style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:30px; margin:0;">Reminders</h1>
+            <div style="font-size:13px; color:#6B5A3A; margin-top:2px;">Tasks for the plants in your garden</div>
+          </div>
+          <div style="padding:6px 16px 16px; display:flex; flex-direction:column; gap:10px;">
+            <sc-for list="{{ remActive }}" as="r" hint-placeholder-count="2">
+              <div style="background:#F4EFDF; border:1px solid #D7CBA6; border-left:4px solid {{ r.stripeColor }}; border-radius:10px; padding:11px 12px;">
+                <div onClick="{{ r.onOpen }}" style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+                  <div style="flex:1; min-width:0;">
+                    <div style="display:flex; align-items:center; gap:6px; margin-bottom:2px;">
+                      <span style="font-size:10px; padding:2px 7px; border-radius:20px; background:{{ r.badgeBg }}; color:{{ r.badgeFg }};">{{ r.badgeText }}</span>
+                      <span style="font-size:12px; color:#6B5A3A;">{{ r.range }}</span>
+                    </div>
+                    <div style="font-size:14.5px; font-weight:600;">{{ r.label }}</div>
+                    <div style="font-size:12.5px; color:#3A5A40; font-style:italic;">{{ r.plantName }}</div>
+                  </div>
+                  <div onClick="{{ r.onToggle }}" style="font-size:12px; font-weight:600; color:#fff; background:{{ accent }}; padding:8px 12px; border-radius:8px; cursor:pointer; white-space:nowrap; flex-shrink:0;">Mark done</div>
+                </div>
+                <sc-if value="{{ r.expanded }}" hint-placeholder-val="{{ false }}">
+                  <div style="font-size:13px; line-height:1.55; color:#3A4A2E; padding:10px 2px 2px; border-top:1px solid #D7CBA6; margin-top:9px;">{{ r.how }}</div>
+                </sc-if>
+              </div>
+            </sc-for>
+            <sc-if value="{{ noRem }}" hint-placeholder-val="{{ false }}">
+              <div style="text-align:center; padding:40px 20px; color:#6B5A3A; font-size:14px;">Nothing needs attention right now.</div>
+            </sc-if>
+
+            <sc-if value="{{ hasDone }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#6B5A3A; margin:14px 0 2px;">Completed this cycle</div>
+              <sc-for list="{{ remDone }}" as="d" hint-placeholder-count="1">
+                <div style="display:flex; align-items:center; gap:10px; background:#E8E2CC; border-radius:10px; padding:9px 12px; opacity:0.75;">
+                  <div style="flex:1; min-width:0;">
+                    <div style="font-size:13.5px; font-weight:600; text-decoration:line-through;">{{ d.label }}</div>
+                    <div style="font-size:12px; color:#6B5A3A; font-style:italic;">{{ d.plantName }}</div>
+                  </div>
+                  <div onClick="{{ d.onUndo }}" style="font-size:11.5px; color:#6B5A3A; text-decoration:underline; cursor:pointer; flex-shrink:0;">Undo</div>
+                </div>
+              </sc-for>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <!-- CALENDAR -->
+        <sc-if value="{{ isCalendar }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:18px 16px 8px; display:flex; align-items:center; justify-content:space-between;">
+            <div onClick="{{ calPrev }}" style="width:32px; height:32px; border-radius:50%; background:#E4DCC2; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;">
+              <svg width="8" height="13" viewBox="0 0 8 13" fill="none"><path d="M6.5 1L1.5 6.5L6.5 12" stroke="#22291D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <h1 style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:26px; margin:0;">{{ calLabel }}</h1>
+            <div onClick="{{ calNext }}" style="width:32px; height:32px; border-radius:50%; background:#E4DCC2; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;">
+              <svg width="8" height="13" viewBox="0 0 8 13" fill="none"><path d="M1.5 1L6.5 6.5L1.5 12" stroke="#22291D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+          <div style="padding:0 16px 4px; display:flex; align-items:center; gap:8px;">
+            <div onClick="{{ onToggleAlarm }}" style="display:flex; align-items:center; gap:6px; border:1px solid {{ alarmChipBorder }}; background:{{ alarmChipBg }}; border-radius:20px; padding:7px 11px; cursor:pointer; flex-shrink:0;">
+              <span style="font-size:12.5px; color:{{ alarmChipFg }};">{{ alarmLabel }}</span>
+            </div>
+            <span style="font-size:10.5px; color:#9C9276; margin-left:auto; flex-shrink:0;">v4</span>
+            <sc-if value="{{ notExported }}" hint-placeholder-val="{{ true }}">
+              <div onClick="{{ onExportCal }}" style="display:flex; align-items:center; gap:7px; border:1px solid #C9BE9E; background:#F4EFDF; border-radius:20px; padding:7px 13px; cursor:pointer;">
+                <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1V8.5M6.5 8.5L3.5 5.5M6.5 8.5L9.5 5.5M1.5 10.5V11.5H11.5V10.5" stroke="#6B5A3A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span style="font-size:12.5px; color:#6B5A3A;">Export to iPhone Calendar</span>
+              </div>
+            </sc-if>
+            <sc-if value="{{ exported }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex; align-items:center; gap:7px; border:1px solid #B7C4A8; background:#DCE6D4; border-radius:20px; padding:7px 13px;">
+                <svg width="12" height="10" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="#3A5A40" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span style="font-size:12.5px; color:#3A5A40;">Calendar file saved — open it to subscribe</span>
+              </div>
+            </sc-if>
+          </div>
+          <div style="padding:6px 16px 16px; display:flex; flex-direction:column; gap:10px;">
+            <sc-for list="{{ calTasks }}" as="c" hint-placeholder-count="3">
+              <div style="background:#F4EFDF; border:1px solid #D7CBA6; border-left:4px solid {{ c.stripeColor }}; border-radius:10px; padding:11px 12px;">
+                <div onClick="{{ c.onOpen }}" style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+                  <div style="width:44px; flex-shrink:0; text-align:center;">
+                    <div style="font-size:17px; font-weight:600; font-family:'Cormorant Garamond',serif;">{{ c.day }}</div>
+                    <div style="font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:#6B5A3A;">{{ c.mon }}</div>
+                  </div>
+                  <div style="flex:1; min-width:0;">
+                    <div style="font-size:14.5px; font-weight:600;">{{ c.label }}</div>
+                    <div style="font-size:12.5px; color:#3A5A40; font-style:italic;">{{ c.plantName }}</div>
+                  </div>
+                  <div style="font-size:10.5px; padding:3px 8px; border-radius:20px; background:{{ c.badgeBg }}; color:{{ c.badgeFg }}; white-space:nowrap; flex-shrink:0;">{{ c.badgeText }}</div>
+                  <div onClick="{{ c.onToggle }}" style="width:26px; height:26px; border-radius:50%; border:1.5px solid {{ accent }}; background:{{ c.checkBg }}; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;">
+                    <sc-if value="{{ c.isDone }}" hint-placeholder-val="{{ false }}"><svg width="12" height="10" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></sc-if>
+                  </div>
+                </div>
+                <sc-if value="{{ c.expanded }}" hint-placeholder-val="{{ false }}">
+                  <div style="font-size:13px; line-height:1.55; color:#3A4A2E; padding:10px 2px 2px 54px; border-top:1px solid #D7CBA6; margin-top:9px;">{{ c.how }}</div>
+                </sc-if>
+              </div>
+            </sc-for>
+            <sc-if value="{{ noCalTasks }}" hint-placeholder-val="{{ false }}">
+              <div style="text-align:center; padding:40px 20px; color:#6B5A3A; font-size:14px;">Nothing scheduled this month.</div>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <!-- HISTORY -->
+        <sc-if value="{{ isHistory }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:18px 16px 8px;">
+            <h1 style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:30px; margin:0;">History</h1>
+            <div style="font-size:13px; color:#6B5A3A; margin-top:2px;">Plants you've removed — add them back any time</div>
+          </div>
+          <div style="padding:6px 16px 16px; display:flex; flex-direction:column; gap:10px;">
+            <sc-for list="{{ historyList }}" as="h" hint-placeholder-count="2">
+              <div style="background:#F4EFDF; border:1px solid #D7CBA6; border-radius:12px; padding:10px 12px; display:flex; flex-direction:column; gap:8px;">
+                <div onClick="{{ h.onOpen }}" style="display:flex; align-items:center; gap:12px; cursor:pointer;">
+                  <div style="width:40px; height:40px; border-radius:50%; background:{{ h.catColor }}; opacity:0.55; color:#fff; display:flex; align-items:center; justify-content:center; font-family:'Cormorant Garamond',serif; font-size:17px; font-weight:600; flex-shrink:0;">{{ h.initial }}</div>
+                  <div style="flex:1; min-width:0;">
+                    <div style="font-size:15px; font-weight:600;">{{ h.name }}</div>
+                    <div style="font-size:12px; color:#6B5A3A;">Removed {{ h.removedAtStr }}</div>
+                  </div>
+                  <div onClick="{{ h.onAddBack }}" style="font-size:12px; font-weight:600; color:#fff; background:{{ accent }}; padding:7px 12px; border-radius:8px; cursor:pointer; flex-shrink:0; white-space:nowrap;">Add back</div>
+                </div>
+                <sc-if value="{{ h.editing }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:flex; flex-direction:column; gap:6px;">
+                    <textarea value="{{ h.noteEditVal }}" onInput="{{ h.onNoteInput }}" placeholder="Why was this plant removed?" style="width:100%; box-sizing:border-box; border:1px solid #C9BE9E; background:#fff; border-radius:8px; padding:8px 10px; font-size:13px; font-family:'EB Garamond',serif; color:#22291D; resize:vertical; min-height:50px;"></textarea>
+                    <div style="display:flex; gap:8px;">
+                      <div onClick="{{ h.onSaveNote }}" style="font-size:12px; font-weight:600; color:#fff; background:{{ accent }}; padding:6px 12px; border-radius:8px; cursor:pointer;">Save note</div>
+                      <div onClick="{{ h.onCancelEditNote }}" style="font-size:12px; color:#6B5A3A; padding:6px 12px; cursor:pointer;">Cancel</div>
+                    </div>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ h.notEditing }}" hint-placeholder-val="{{ true }}">
+                  <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:10px;">
+                    <div onClick="{{ h.onEditNote }}" style="flex:1; min-width:0; font-size:12.5px; color:{{ h.noteColor }}; font-style:italic; cursor:pointer; padding-left:2px;">{{ h.noteDisplay }}</div>
+                    <div onClick="{{ h.onDelete }}" style="font-size:11.5px; color:#8B4A3A; cursor:pointer; flex-shrink:0; white-space:nowrap;">Delete</div>
+                  </div>
+                </sc-if>
+              </div>
+            </sc-for>
+            <sc-if value="{{ noHistory }}" hint-placeholder-val="{{ false }}">
+              <div style="text-align:center; padding:50px 20px; color:#6B5A3A; font-size:14px;">No removed plants yet.</div>
+            </sc-if>
+          </div>
+        </sc-if>
+
+      </div>
+
+      <!-- TAB BAR -->
+      <div style="display:flex; border-top:1px solid #C9BE9E; background:#EDE7D8; padding:8px 6px calc(var(--sb) + 12px); flex-shrink:0;">
+        <div onClick="{{ goGarden }}" style="flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; cursor:pointer; color:{{ tabGardenColor }};">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 18C10 18 3 13.5 3 8C3 5 5 3 8 3C9 3 10 3.5 10 3.5C10 3.5 11 3 12 3C15 3 17 5 17 8C17 13.5 10 18 10 18Z" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+          <span style="font-size:10px;">Garden</span>
+        </div>
+        <div onClick="{{ goReminders }}" style="flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; cursor:pointer; color:{{ tabRemindersColor }}; position:relative;">
+          <div style="position:relative; display:inline-flex; align-items:center; justify-content:center;"><svg width="18" height="20" viewBox="0 0 18 20" fill="none"><path d="M2 15H16L14.5 12.5V8C14.5 4.5 12 2 9 2C6 2 3.5 4.5 3.5 8V12.5L2 15Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M7 17.5C7.5 18.3 8.2 18.8 9 18.8C9.8 18.8 10.5 18.3 11 17.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><sc-if value="{{ hasRemBadge }}" hint-placeholder-val="{{ false }}"><div style="position:absolute; top:-6px; right:-9px; min-width:17px; height:17px; padding:0 4px; border-radius:9px; background:#C8402F; color:#fff; font-size:11px; font-weight:600; font-family:'EB Garamond',serif; display:flex; align-items:center; justify-content:center; line-height:1;">{{ remBadgeCount }}</div></sc-if></div>
+          <span style="font-size:10px;">Reminders</span>
+        </div>
+        <div onClick="{{ goCalendar }}" style="flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; cursor:pointer; color:{{ tabCalendarColor }};">
+          <svg width="19" height="19" viewBox="0 0 19 19" fill="none"><rect x="1.5" y="3" width="16" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M1.5 7H17.5" stroke="currentColor" stroke-width="1.6"/><path d="M5.5 1V4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M13.5 1V4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <span style="font-size:10px;">Calendar</span>
+        </div>
+        <div onClick="{{ goHistory }}" style="flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; cursor:pointer; color:{{ tabHistoryColor }};">
+          <svg width="19" height="19" viewBox="0 0 19 19" fill="none"><circle cx="9.5" cy="10" r="7.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M9.5 6V10L12.5 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 1.5L2 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          <span style="font-size:10px;">History</span>
+        </div>
+      </div>
+    </sc-if>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:402,&quot;height&quot;:874},&quot;reminderLeadDays&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:6,&quot;min&quot;:0,&quot;max&quot;:14,&quot;step&quot;:1,&quot;unit&quot;:&quot;days&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Reminders&quot;},&quot;accentColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#B08D57&quot;,&quot;options&quot;:[&quot;#B08D57&quot;,&quot;#8B5E3C&quot;,&quot;#3A5A40&quot;,&quot;#6B5A3A&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Appearance&quot;}}">
+const BUILTIN = [
+{id:'hydrangea',name:'Hydrangea',sci:'Hydrangea macrophylla',category:'Ornamental Shrubs',type:'Shrub',
+ photo:'https://images.pexels.com/photos/21760709/pexels-photo-21760709.jpeg?auto=compress&cs=tinysrgb&w=800',
+ light:'Morning sun, afternoon shade',water:'Deep, 1–2×/week; keep evenly moist',soil:'Rich, well-drained, slightly acidic',spacing:'3–5 ft between shrubs',
+ planting:['Plant in early spring or fall, once heat has broken.','Dig a hole twice the width of the root ball, same depth.','Backfill with compost-enriched soil; water in thoroughly.','Mulch 2–3 in. to retain moisture, keeping mulch off the stem.'],
+ ongoing:"March: prune only the previous year's dead wood — most big-leaf varieties bloom on old growth, so heavy pruning now removes this year's flowers. Feed with a balanced, slow-release fertilizer as new growth appears. Water deeply through summer heat, and adjust bloom color with soil pH if desired.",
+ pests:[['Wilting leaves midday','Normal in heat if soil is moist; water only if still wilted by evening.'],['Aphids & spider mites','Rinse with a strong water spray or treat with insecticidal soap.'],['No blooms','Usually over-pruning old wood, late frost, or too much shade.'],['Leaf scorch','Too much direct afternoon sun — relocate or provide shade cloth.']],
+ harvestLabel:'Harvest & cutting',harvest:"Cut blooms once petals feel papery and slightly stiff — this is when they'll hold longest in a vase. Cut in early morning, strip lower leaves, and place stems immediately in water.",
+ tasks:[{id:'t1',label:'Prune hydrangeas',sm:3,sd:1,em:3,ed:31,how:"Cut back only stems that stayed bare and brittle through winter — true dead wood. Leave any stem showing green or swelling buds, since most varieties bloom on last year's growth; heavy pruning now removes this year's flowers."}]},
+
+{id:'foxglove-beardtongue',name:'Foxglove Beardtongue',sci:'Penstemon digitalis',category:'Ornamental Shrubs',type:'Perennial',photo:'',
+ light:'Full sun to part shade',water:'Average; tolerates brief drought once established',soil:'Adaptable; average, well-drained',spacing:'12–18 in. apart',
+ planting:['Plant divisions or nursery starts in mid-spring once the soil has warmed.','Choose a spot in full sun for the sturdiest stems and heaviest bloom.','Space 12–18 in. apart; forms tidy clumps rather than spreading aggressively.','Water in well, then let established plants largely fend for themselves.'],
+ ongoing:"Once rooted in, asks for very little — occasional water in extended dry spells is usually enough. Avoid rich soil or excess fertilizer, which produces floppy growth. Divide congested clumps every 3–4 years in spring.",
+ pests:[['Powdery mildew','Occasional in humid, crowded plantings — improve air circulation.'],['Floppy stems','Usually too much shade or fertility — move to sun, ease off feeding.'],['Deer & rabbits','Rarely bothered — one of the more browse-resistant perennials.'],['Self-seeding','Can spread by seed in loose beds — deadhead to limit volunteers.']],
+ harvestLabel:"Cutting & season's end",harvest:'The white, bell-shaped flower spikes make fine cut arrangements — cut when a third of the florets are open. Cut back to the basal rosette after frost.',
+ tasks:[{id:'t1',label:'Divide & plant',sm:3,sd:15,em:4,ed:30,how:"Lift and split congested clumps in mid-spring once soil has warmed. Replant divisions or nursery starts 12–18 in. apart in full sun, water in well, then let established plants largely fend for themselves."},{id:'t2',label:'Deadhead spent blooms',sm:6,sd:15,em:8,ed:15,how:"Snip spent flower spikes back to the basal foliage once most florets have faded. This tidies the clump and limits volunteer seedlings in loose beds."}]},
+
+{id:'common-tansy',name:'Common Tansy',sci:'Tanacetum vulgare',category:'Ornamental Shrubs',type:'Perennial',photo:'',
+ light:'Full sun',water:'Low; quite drought tolerant once established',soil:'Tolerates poor, dry, disturbed soils',spacing:'18–24 in.; spreads by rhizome',
+ planting:['Plant in full sun in an out-of-the-way bed — it spreads readily by rhizome.','Consider a buried root barrier or a sunken container if space is limited.','Space 18–24 in. apart; a single start fills in quickly.','Site away from wilder areas where it could naturalize.'],
+ ongoing:'Cut old stalks back in early spring. Needs no feeding and little water once established — lean conditions keep it more restrained. Pull unwanted runners while they are young.',
+ pests:[['Spreading beyond bounds','Its biggest challenge — divide and pull runners each fall.'],['Aphids','Occasionally cluster on stems — rinse off or ignore.'],['Flopping stems','Rich soil or too much shade — grow lean and in full sun.'],['Toxicity note','Foliage is toxic if ingested — site away from grazing animals and children.']],
+ harvestLabel:"Cutting & season's end",harvest:'Cut flowering stems in mid-to-late summer for dried arrangements — the button-like clusters air-dry well. Cut back once foliage collapses after frost.',
+ tasks:[{id:'t1',label:'Cut back old growth',sm:3,sd:1,em:4,ed:15,how:"Cut last year's dried stalks down to the ground in early spring before new shoots emerge. No feeding needed — lean conditions keep growth more restrained."},{id:'t2',label:'Divide & thin clumps',sm:9,sd:15,em:10,ed:15,how:"In fall, dig and divide spreading clumps, pulling unwanted rhizome runners while they're still young and easy to remove. Replant only where spread is welcome."}]},
+
+{id:'white-dogwood',name:'White Dogwood',sci:'Cornus florida',category:'Ornamental Shrubs',type:'Flowering Tree',photo:'',
+ light:'Full sun to part shade (understory tree)',water:'Regular while young; drought-tolerant once established',soil:'Rich, acidic, well-drained; dislikes compacted clay',spacing:'15–20 ft from structures and other trees',
+ planting:['Plant balled-and-burlapped or container trees in early spring or fall.','Choose a site with afternoon shade in hot climates; morning sun is ideal.','Dig a hole only as deep as the root ball and 2–3× as wide; avoid burying the root flare.','Mulch generously in a wide ring, clear of the trunk.'],
+ ongoing:'Water deeply and regularly for the first two to three years. Avoid nicking bark with mowers — prone to trunk cankers. Prune in early summer, after flowering, to limit sap loss and disease entry.',
+ pests:[['Dogwood anthracnose','Leaf spots and dieback in cool, wet springs — improve airflow.'],['Borers','Enter through trunk wounds — protect bark from mower damage.'],['Powdery mildew','Whitish coating in humid weather — thin canopy for airflow.'],['Poor bloom','Usually too much shade or a young tree still establishing.']],
+ harvestLabel:'Seasonal display',harvest:'White bracts open in mid-spring before leaves emerge, followed by red fall foliage and fruit birds relish. Enjoy in place rather than cutting heavily.',
+ tasks:[{id:'t1',label:'Prune (dead/crossing wood)',sm:6,sd:1,em:7,ed:15,how:"Prune in early summer, right after flowering, to limit sap loss and disease entry. Remove only dead, damaged, or crossing branches; avoid nicking bark, which invites trunk cankers."}]},
+
+{id:'butterfly-bush',name:'Butterfly Bush',sci:'Buddleja davidii',category:'Ornamental Shrubs',type:'Shrub',photo:'',
+ light:'Full sun',water:'Drought tolerant once established',soil:'Average, well-drained; tolerates poor soil',spacing:'5–8 ft between shrubs',
+ planting:['Plant in spring in a full-sun site with good drainage.','Dig a hole twice the width of the root ball; backfill and water in well.','Space 5–8 ft apart to allow for its fast, arching summer growth.','Mulch to conserve moisture in the first season.'],
+ ongoing:'Cut back hard to 12–18 in. in early spring — blooms on new wood. Deadhead spent flower spikes through the season to keep blooms coming and curb self-seeding.',
+ pests:[['Spider mites','Fine stippling in hot, dry weather — hose foliage regularly.'],['Self-seeding','Can naturalize in some regions — deadhead promptly.'],['Winter dieback','Normal in colder zones — treat as a cutback shrub.'],['Leggy growth','Skipped pruning — cut back hard annually.']],
+ harvestLabel:"Cutting & season's end",harvest:'Cut fragrant flower spikes for indoor arrangements as they open. Leave the last flush standing for late-season pollinators before the spring cutback.',
+ tasks:[{id:'t1',label:'Prune hard',sm:3,sd:1,em:3,ed:31,how:"Cut all stems back hard to 12–18 in. above ground in early spring. This shrub blooms on new wood, so a hard annual cutback produces the strongest summer flush."},{id:'t2',label:'Deadhead spent spikes',sm:7,sd:1,em:9,ed:30,how:"Snip off flower spikes as they fade through summer to keep new blooms coming and curb self-seeding. Leave the last flush standing for late-season pollinators."}]},
+
+{id:'bridal-wreath-spirea',name:'Bridal Wreath Spirea',sci:'Spiraea prunifolia · "Foam of May"',category:'Ornamental Shrubs',type:'Shrub',photo:'',
+ light:'Full sun to part shade',water:'Average; drought tolerant once established',soil:'Adaptable to most well-drained soils',spacing:'4–6 ft between shrubs',
+ planting:['Plant in early spring or fall with room for its arching, spreading habit.','Backfill with native soil; unfussy about amendments.','Space 4–6 ft apart, or closer as an informal flowering hedge.','Water regularly the first year.'],
+ ongoing:'Blooms form on last year\'s wood, so prune immediately after flowering finishes. Remove a third of the oldest canes at ground level every few years to renew the shrub.',
+ pests:[['Leggy, open habit','Natural for the species — renewal-prune old canes for a fuller look.'],['Aphids','Occasional on new growth — a strong water spray usually clears them.'],['Fireblight','Rare — prune out and destroy any blackened shoots promptly.'],['No bloom','Usually pruning at the wrong time — always prune right after flowering.']],
+ harvestLabel:"Cutting & season's end",harvest:'Cut flowering branches just as buds begin to open — sprays hold well for over a week. Foliage turns yellow to bronze-purple in fall.',
+ tasks:[{id:'t1',label:'Prune (right after bloom)',sm:5,sd:10,em:5,ed:31,how:"Prune immediately after flowering finishes, since blooms form on last year's wood. Every few years, remove a third of the oldest canes at ground level to renew the shrub."}]},
+
+{id:'beauty-bush',name:'Beauty Bush',sci:'Kolkwitzia amabilis',category:'Ornamental Shrubs',type:'Shrub',photo:'',
+ light:'Full sun for best bloom',water:'Average; drought tolerant once established',soil:'Well-drained; adaptable to most soil types',spacing:'6–10 ft between shrubs',
+ planting:['Plant in full sun; this large, arching shrub needs room to reach mature size.','Site where its exfoliating bark and winter silhouette can be appreciated.','Space 6–10 ft apart, or as a single specimen.','Water regularly through the first growing season.'],
+ ongoing:'Needs very little upkeep beyond timely pruning. Flowers form on old wood, so prune immediately after the late-spring bloom. Tolerates heat, drought, and poor soil with ease.',
+ pests:[['Few pest problems','One of the more trouble-free shrubs.'],['Overgrown size','Can reach 6–10 ft — site with mature size in mind.'],['Sparse bloom','Usually too much shade — full sun gives the heaviest display.'],['Suckering','May send up basal shoots — remove for a tidier form.']],
+ harvestLabel:"Cutting & season's end",harvest:'Cut flowering branches just as the bell-shaped pink blooms open. Peeling tan-brown bark carries seasonal interest through winter.',
+ tasks:[{id:'t1',label:'Prune (right after bloom)',sm:6,sd:1,em:6,ed:30,how:"Prune right after the late-spring bloom fades, since flowers form on old wood. Remove any basal suckers for a tidier form; otherwise this shrub needs very little pruning."}]},
+
+{id:'forsythia',name:'Forsythia',sci:'Forsythia × intermedia',category:'Ornamental Shrubs',type:'Shrub',photo:'',
+ light:'Full sun for heaviest bloom',water:'Average; drought tolerant once established',soil:'Adaptable to most well-drained soils',spacing:'4–6 ft between shrubs',
+ planting:['Plant in early spring or fall in full sun for the fullest golden display.','Allow room for its naturally loose, arching form.','Space 4–6 ft apart; backfill with native soil and water in thoroughly.','Mulch to retain moisture, especially through the first summer.'],
+ ongoing:'Prune right after blooms fade — waiting removes next year\'s display. Remove a portion of the oldest stems at the base every few years. Asks for little water or feeding once established.',
+ pests:[['Sparse bloom low on plant','Often winter cold damaging buds — choose a hardy cultivar.'],['Overgrown, tangled form','Result of shearing instead of renewal pruning.'],['Leaf spot','Occasional in wet weather — rarely serious.'],['Galls on stems','Cosmetic — prune out affected stems if unsightly.']],
+ harvestLabel:"Cutting & season's end",harvest:'Cut budded branches in late winter to force indoors for early color, or cut open sprays right at peak bloom.',
+ tasks:[{id:'t1',label:'Prune (right after bloom)',sm:4,sd:15,em:5,ed:15,how:"Prune right after blooms fade — waiting removes next year's display. Every few years, remove a portion of the oldest stems at the base to keep the shrub full and renewed."}]},
+
+{id:'fall-phlox',name:'Fall Phlox',sci:'Phlox paniculata',category:'Ornamental Shrubs',type:'Perennial',photo:'',
+ light:'Full sun; good air circulation matters',water:'Consistent moisture at the base, not overhead',soil:'Rich, well-drained, moisture-retentive',spacing:'18–24 in. apart for airflow',
+ planting:['Divide and plant in early to mid spring, or set out potted starts after last frost.','Choose a full-sun spot with open airflow to help prevent mildew.','Space 18–24 in. apart — crowding is the biggest cause of disease.','Water in well and mulch to keep roots cool and evenly moist.'],
+ ongoing:'Water at the base in the morning to keep foliage dry. Deadhead spent clusters to encourage a second flush. Divide congested clumps every 3–4 years.',
+ pests:[['Powdery mildew','The classic phlox problem — space plants well, water at the base.'],['Spider mites','Fine stippling in hot, dry spells — increase humidity.'],['Reverting seedlings','Volunteers often revert to plain magenta — remove if off-color.'],['Stem canker','Cut out affected stems; avoid working among wet foliage.']],
+ harvestLabel:"Cutting & season's end",harvest:'Cut fragrant clusters for the vase once half the florets are open. Cut stems to the ground after frost to reduce overwintering mildew spores.',
+ tasks:[{id:'t1',label:'Divide & plant',sm:4,sd:1,em:4,ed:30,how:"Divide crowded clumps in early to mid spring, or set out potted starts after last frost. Space divisions 18–24 in. apart with open airflow — crowding is the biggest cause of mildew."},{id:'t2',label:'Deadhead for rebloom',sm:7,sd:15,em:9,ed:30,how:"Cut spent flower clusters back to a leaf node once most florets fade. This encourages a second flush of bloom later in the season."}]},
+
+{id:'common-gaillardia',name:'Common Gaillardia',sci:'Gaillardia aristata · blanket flower',category:'Ornamental Shrubs',type:'Perennial',photo:'',
+ light:'Full sun',water:'Low; excellent drought tolerance once established',soil:'Lean, sharply drained; dislikes wet feet',spacing:'12–18 in. apart',
+ planting:['Sow seed or set out transplants after last frost, in full sun.','Choose sharply drained soil — raised beds or slopes suit it well.','Space 12–18 in. apart; avoid rich, heavily amended beds.','Water sparingly to establish, then taper off.'],
+ ongoing:'At its best in lean, dry conditions — resist the urge to fertilize or over-water. Deadhead spent blooms regularly through summer to keep flowers coming right up to frost.',
+ pests:[['Crown rot','From wet, poorly drained soil — improve drainage or raise the bed.'],['Short-lived plants','Often behaves as short-lived — let a few seed heads self-sow.'],['Aster yellows','Distorted, greenish blooms — remove and destroy affected plants.'],['Leaf spot','Occasional in humid weather — thin plants for airflow.']],
+ harvestLabel:"Cutting & season's end",harvest:'Cut flowers for the vase just as petals fully unfurl. Leave the last flowers to set seed if you want volunteers next year.',
+ tasks:[{id:'t1',label:'Sow / plant',sm:4,sd:1,em:5,ed:15,how:"Sow seed or set out transplants after last frost, in full sun and sharply drained soil. Space 12–18 in. apart and water sparingly to establish, then taper off."},{id:'t2',label:'Deadhead regularly',sm:6,sd:15,em:9,ed:30,how:"Remove spent blooms regularly through summer to keep flowers coming right up to frost. Leave a few seed heads late in the season if you want volunteers next year."}]},
+
+{id:'rose-of-sharon',name:'Rose of Sharon',sci:'Hibiscus syriacus',category:'Ornamental Shrubs',type:'Shrub',photo:'',
+ light:'Full sun to light shade',water:'Average; tolerates brief dry spells once established',soil:'Adaptable; average, well-drained',spacing:'6–10 ft between shrubs',
+ planting:['Plant in spring or fall in full sun to light shade for the best flower show.','Dig a hole twice the width of the root ball; backfill with native soil.','Space 6–10 ft apart, allowing for its upright, vase-shaped form.','Water regularly through the first season.'],
+ ongoing:'Prune in late winter to early spring — flowers form on new growth. Deadhead spent blooms through summer to limit self-seeding. Otherwise low-maintenance through the hottest weeks.',
+ pests:[['Japanese beetles','Skeletonized leaves in midsummer — hand-pick in early morning.'],['Aphids','Cluster on buds — rinse with water or treat with insecticidal soap.'],['Prolific self-seeding','Deadhead promptly, or choose a sterile cultivar.'],['Late leafing in spring','Normal — one of the last shrubs to leaf out.']],
+ harvestLabel:"Cutting & season's end",harvest:'Each bloom lasts only a day, so cut buds just as they show color. Flowering runs from midsummer to first frost.',
+ tasks:[{id:'t1',label:'Prune',sm:3,sd:1,em:3,ed:31,how:"Prune in late winter to early spring, since flowers form on new growth. Shape lightly and remove any crossing or damaged branches."}]},
+
+{id:'tomato',name:'Tomato',sci:'Solanum lycopersicum',category:'Vegetables',type:'Vegetable',
+ photo:'https://images.pexels.com/photos/6314416/pexels-photo-6314416.jpeg?auto=compress&cs=tinysrgb&w=800',
+ light:'Full sun, 6–8 hrs daily',water:'Consistent, 1–2 in./week at the base',soil:'Loose, fertile, pH 6.2–6.8',spacing:'18–24 in. apart, staked',
+ planting:['Sow seeds indoors 6–8 weeks before last frost, 1/4 in. deep, under bright light.','Harden off over 7–10 days: short outdoor stints, gradually longer.','Transplant after all frost danger has passed, burying two-thirds of the stem.','Set stakes or cages at planting time to avoid disturbing roots later.'],
+ ongoing:'Water at the base, not the leaves, to limit fungal disease. Pinch out side shoots weekly on indeterminate varieties. Feed every 2–3 weeks with a low-nitrogen, high-potassium fertilizer once flowering begins.',
+ pests:[['Blossom-end rot','Calcium deficiency from inconsistent watering — water evenly, mulch well.'],['Hornworms','Hand-pick in early morning; look for chewed leaves.'],['Early blight','Yellowing lower leaves with dark rings — remove foliage, rotate beds.'],['Cracked fruit','Heavy rain after a dry spell — keep watering consistent.']],
+ harvestLabel:'Harvest',harvest:'Pick when fruit is fully colored and slightly firm, twisting gently at the stem. Pick green fruit before frost and ripen indoors on a sunny sill.',
+ tasks:[{id:'t1',label:'Sow seeds indoors',sm:3,sd:15,em:4,ed:10,how:"Sow seeds 6–8 weeks before last frost, 1/4 in. deep, under bright light or a grow light. Keep soil consistently moist until germination."},{id:'t2',label:'Harden off seedlings',sm:5,sd:5,em:5,ed:15,how:"Over 7–10 days, give seedlings short outdoor stints in a sheltered, shaded spot, gradually lengthening exposure to sun and wind before transplanting."},{id:'t3',label:'Transplant outdoors',sm:5,sd:15,em:5,ed:31,how:"Transplant after all frost danger has passed, burying two-thirds of the stem to encourage a stronger root system. Set stakes or cages at planting time to avoid disturbing roots later."},{id:'t4',label:'Stake & prune',sm:6,sd:1,em:6,ed:15,how:"Tie main stems to stakes or cages as they grow. Pinch out side shoots weekly on indeterminate varieties to focus energy on fruiting."},{id:'t5',label:'Harvest',sm:8,sd:1,em:9,ed:30,how:"Pick fruit once fully colored and slightly firm, twisting gently at the stem. Before frost, pick any remaining green fruit and ripen indoors on a sunny sill."}]},
+
+{id:'radishes',name:'Radishes',sci:'Raphanus sativus',category:'Root Vegetables',type:'Root Vegetable',
+ photo:'https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Raphanus_sativus.jpg/500px-Raphanus_sativus.jpg',
+ light:'Full sun to light shade',water:"Steady moisture; don't let soil dry out",soil:'Loose, sandy loam, free of stones',spacing:'1 in. apart, thinned to 2 in.',
+ planting:['Sow seed directly, 1/2 in. deep, as soon as soil can be worked in spring.','Thin seedlings to 2 in. apart once true leaves appear.','Sow a new short row every two weeks for a continuous supply.','Pause sowing in the hottest weeks of summer.'],
+ ongoing:'Keep soil evenly moist — inconsistent watering produces woody roots and splitting. Weed gently by hand; roots sit shallow. No feeding needed in fertile soil.',
+ pests:[['Flea beetles','Small shot-holes in leaves — cover young rows with fine mesh.'],['All leaf, no root','Usually too much nitrogen or crowding — thin more aggressively.'],['Cracked roots','Irregular watering — keep moisture consistent, mulch lightly.'],['Bolting to seed','Triggered by heat or long days — sow earlier or later.']],
+ harvestLabel:'Harvest',harvest:'Pull as soon as roots reach usable size — most mature in 3–4 weeks and go pithy if left too long. Twist off tops before storing.',
+ tasks:[{id:'t1',label:'Sow (succession, every 2 weeks)',sm:3,sd:1,em:8,ed:15,how:"Sow seed directly, 1/2 in. deep, as soon as soil can be worked. Thin seedlings to 2 in. apart once true leaves appear, and sow a fresh short row every two weeks; pause in the hottest weeks of summer."},{id:'t2',label:'Harvest',sm:3,sd:25,em:9,ed:15,how:"Pull as soon as roots reach usable size — most mature in 3–4 weeks and turn pithy if left too long. Twist off tops before storing."}]},
+
+{id:'rocket-arugula',name:'Rocket / Arugula',sci:'Eruca vesicaria subsp. sativa',category:'Leafy Greens',type:'Leafy Green',
+ photo:'https://images.pexels.com/photos/4519008/pexels-photo-4519008.jpeg?auto=compress&cs=tinysrgb&w=800',
+ light:'Full sun; light shade in heat',water:'Regular, light watering to keep leaves tender',soil:'Moisture-retentive, well-worked',spacing:'Thin to 6 in. apart',
+ planting:['Sow seed directly, 1/4 in. deep, in full sun to part shade.','Thin gradually as seedlings grow, eating the thinnings in salads.','Sow a spring batch and a second late-summer batch for a fall crop.','In hot climates, favor part shade to slow bolting.'],
+ ongoing:"Water regularly and lightly — dry spells make leaves tougher and more pungent. Keep beds weeded; shallow roots compete poorly. Dislikes hot weather and will bolt quickly.",
+ pests:[['Flea beetles','Peppered small holes in leaves — cover with fine mesh.'],['Bolting','Heat or long days trigger flowering — harvest promptly, resow cooler.'],['Overly bitter leaves','Heat stress or drought — increase watering, provide shade.'],['Slugs','Check tender young leaves at dusk; use a barrier or organic bait.']],
+ harvestLabel:'Harvest',harvest:'Cut outer leaves at 2–3 in. tall for baby greens, or let reach 4–6 in. for fuller peppery flavor. Once flowering starts, flavor turns sharply bitter.',
+ tasks:[{id:'t1',label:'Sow — spring batch',sm:3,sd:15,em:4,ed:30,how:"Sow seed directly, 1/4 in. deep, in full sun to part shade. Thin gradually as seedlings grow, eating the thinnings in salads."},{id:'t2',label:'Harvest — spring batch',sm:4,sd:15,em:6,ed:15,how:"Cut outer leaves at 2–3 in. tall for baby greens, or let reach 4–6 in. for fuller peppery flavor. Harvest promptly once flowering starts, as flavor turns sharply bitter."},{id:'t3',label:'Sow — late summer batch',sm:8,sd:15,em:9,ed:15,how:"Sow a second batch in late summer for a fall crop; favor a part-shade spot in hot climates to slow bolting."},{id:'t4',label:'Harvest — late summer batch',sm:9,sd:15,em:10,ed:31,how:"Cut outer leaves regularly as they reach usable size. Cooler fall temperatures slow bolting, giving a longer harvest window than the spring batch."}]},
+
+{id:'parsley',name:'Parsley',sci:'Petroselinum crispum',category:'Herbs',type:'Herb',
+ photo:'https://images.pexels.com/photos/1309426/pexels-photo-1309426.jpeg?auto=compress&cs=tinysrgb&w=800',
+ light:'Full sun to part shade',water:"Consistent moisture; don't let it dry out",soil:'Rich, well-drained loam',spacing:'8–10 in. apart',
+ planting:['Soak seed overnight to speed the notoriously slow germination.','Sow 1/4 in. deep directly outdoors once soil has warmed in spring.','Thin seedlings to 8–10 in. apart once true leaves appear.','Keep the bed consistently moist until germination (3–4 weeks).'],
+ ongoing:'Water consistently — parsley is biennial and will bolt in its second year, especially under stress. Snip flower stalks if they appear early. A light feed in early summer keeps growth vigorous.',
+ pests:[['Slow to germinate','Normal — soak seed first and keep soil moist for weeks.'],['Swallowtail caterpillars','Welcome guests in small numbers; relocate if they threaten the plant.'],['Yellowing leaves','Often waterlogging — check drainage and ease off watering.'],['Early bolting','Heat stress or a hard cold snap — mulch to moderate soil temperature.']],
+ harvestLabel:'Harvest',harvest:'Cut outer, older stems first, always leaving the central growing point. Regular light cutting encourages fresh new growth.',
+ tasks:[{id:'t1',label:'Sow outdoors',sm:3,sd:15,em:4,ed:15,how:"Soak seed overnight to speed germination, then sow 1/4 in. deep directly outdoors once soil has warmed. Keep the bed consistently moist until germination, which can take 3–4 weeks."},{id:'t2',label:'Harvest (cut outer leaves)',sm:6,sd:1,em:10,ed:15,how:"Cut outer, older stems first, always leaving the central growing point intact. Regular light cutting encourages fresh new growth through the season."}]}
+];
+
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const CAT_COLORS = {
+  'Ornamental Shrubs': '#7C8B5E',
+  'Vegetables': '#C0714A',
+  'Root Vegetables': '#B08D57',
+  'Leafy Greens': '#4F7942',
+  'Herbs': '#5C7A5C'
+};
+const STORE_KEY = 'gardenAppV1';
+
+class Component extends DCLogic {
+  state = { screen: 'garden', detail: null, myPlants: [], history: [], completed: {}, custom: [], loaded: false, removeDraft: null, editingNoteId: null, noteEditVal: '',
+    lookupState: 'idle', lookupError: '',
+    calMonth: new Date().getMonth(), calYear: new Date().getFullYear(), expandedTaskId: null, expandedRemKey: null, expandedCalKey: null,
+    showForm: false, draft: null,
+    standalone: false, notifyState: 'default', canBadge: false, installDismissed: false, exported: false, alarmMode: '9am' };
+
+  componentDidMount() {
+    this.initDevice();
+    let saved = null;
+    try { saved = JSON.parse(localStorage.getItem(STORE_KEY) || 'null'); } catch (e) {}
+    if (saved && saved.myPlants) {
+      this.setState({ myPlants: saved.myPlants, history: saved.history || [], completed: saved.completed || {}, custom: saved.custom || [], alarmMode: saved.alarmMode || '9am', loaded: true });
+    } else {
+      const now = Date.now();
+      const catalog = BUILTIN;
+      const seed = catalog.map((c, i) => ({ id: c.id + '-seed', catalogId: c.id, addedAt: now - 86400000 * (10 + i) }));
+      this.setState({ myPlants: seed, loaded: true }, () => this.persist());
+    }
+  }
+
+  initDevice() {
+    const standalone = !!(window.navigator.standalone || (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches));
+    const canNotify = typeof Notification !== 'undefined';
+    this.setState({
+      standalone,
+      notifyState: canNotify ? Notification.permission : 'unsupported',
+      canBadge: typeof navigator !== 'undefined' && 'setAppBadge' in navigator
+    });
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
+    }
+  }
+
+  enableNotifications() {
+    if (typeof Notification === 'undefined') return;
+    Notification.requestPermission().then(p => {
+      this.setState({ notifyState: p });
+      this.pushBadge(this.lastBadgeCount || 0);
+    }).catch(() => {});
+  }
+
+  pushBadge(n) {
+    this.lastBadgeCount = n;
+    try { n > 0 ? navigator.setAppBadge && navigator.setAppBadge(n) : navigator.clearAppBadge && navigator.clearAppBadge(); } catch (e) {}
+    if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+      try { navigator.serviceWorker.controller.postMessage({ type: 'badge', count: n }); } catch (e) {}
+    }
+  }
+
+  exportCalendar() {
+    const byId = {};
+    this.allPlants().forEach(c => byId[c.id] = c);
+    const lead = this.props.reminderLeadDays ?? 6;
+    const pad = n => String(n).padStart(2, '0');
+    const stamp = d => d.getUTCFullYear() + pad(d.getUTCMonth() + 1) + pad(d.getUTCDate());
+    const now = new Date();
+    const years = [now.getFullYear(), now.getFullYear() + 1];
+    const esc = s => String(s || '').replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/,/g, '\\,').replace(/;/g, '\\;');
+    const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Garden Care//EN', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', 'X-WR-CALNAME:Garden Care'];
+    this.state.myPlants.forEach(p => {
+      const cat = byId[p.catalogId];
+      if (!cat) return;
+      (cat.tasks || []).forEach(t => {
+        years.forEach(y => {
+          const start = new Date(Date.UTC(y, t.sm - 1, t.sd));
+          const endEx = new Date(Date.UTC(y, t.em - 1, t.ed + 1));
+          if (endEx.getTime() < now.getTime()) return;
+          lines.push('BEGIN:VEVENT');
+          lines.push('UID:' + p.id + '-' + t.id + '-' + y + '@garden-care');
+          lines.push('DTSTAMP:' + stamp(now) + 'T000000Z');
+          lines.push('DTSTART;VALUE=DATE:' + stamp(start));
+          lines.push('DTEND;VALUE=DATE:' + stamp(endEx));
+          lines.push('SUMMARY:' + esc(cat.name + ' — ' + t.label));
+          lines.push('DESCRIPTION:' + esc(t.how || ''));
+          if (this.state.alarmMode !== 'none') {
+            // all-day events fire at midnight; offset back to 09:00 on the lead day
+            const hoursBefore = lead * 24 - 9;
+            lines.push('BEGIN:VALARM');
+            lines.push('TRIGGER:-PT' + hoursBefore + 'H');
+            lines.push('ACTION:DISPLAY');
+            lines.push('DESCRIPTION:' + esc(cat.name + ' — ' + t.label));
+            lines.push('END:VALARM');
+          }
+          lines.push('END:VEVENT');
+        });
+      });
+    });
+    lines.push('END:VCALENDAR');
+    const blob = new Blob([lines.join('\r\n')], { type: 'text/calendar' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'garden-care.ics';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
+    this.setState({ exported: true });
+    setTimeout(() => this.setState({ exported: false }), 2600);
+  }
+
+  persist() {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify({ myPlants: this.state.myPlants, history: this.state.history, completed: this.state.completed, custom: this.state.custom, alarmMode: this.state.alarmMode })); } catch (e) {}
+  }
+
+  allPlants() { return BUILTIN.concat(this.state.custom || []); }
+
+  blankDraft() {
+    return { name: '', sci: '', category: 'Vegetables', light: '', water: '', soil: '', spacing: '', ongoing: '',
+      tasks: [{ label: '', sm: 4, em: 5, how: '' }] };
+  }
+  openForm() { this.setState({ showForm: true, draft: this.blankDraft(), lookupState: 'idle', lookupError: '' }); }
+
+  async lookupPlant() {
+    const name = (this.state.draft && this.state.draft.name || '').trim();
+    if (!name) return;
+    this.setState({ lookupState: 'loading', lookupError: '' });
+    const cats = Object.keys(CAT_COLORS).join(', ');
+    try {
+      let data;
+      if (window.claude && window.claude.complete) {
+        const prompt = 'You are a gardening reference. For the plant "' + name + '", return ONLY a JSON object (no markdown, no commentary) with this exact shape:\n' +
+          '{"name":"common name","sci":"botanical name","category":"one of: ' + cats + '","light":"short light needs","water":"short watering needs","soil":"short soil needs","spacing":"short spacing guidance","ongoing":"1-2 sentence ongoing care notes","tasks":[{"label":"task name","sm":<start month 1-12>,"em":<end month 1-12>,"how":"2-4 sentence how-to"}]}\n' +
+          'Include 3 to 6 seasonal care tasks (e.g. planting, pruning, feeding, harvesting) with realistic Northern Hemisphere month ranges. Respond with raw JSON only.';
+        const text = await window.claude.complete(prompt);
+        const match = text.match(/\{[\s\S]*\}/);
+        if (!match) throw new Error('no json');
+        data = JSON.parse(match[0]);
+      } else {
+        const r = await fetch('/api/lookup-plant', {
+          method: 'POST', headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ name, categories: cats })
+        });
+        if (!r.ok) throw new Error('lookup failed');
+        data = await r.json();
+      }
+      const cat = Object.keys(CAT_COLORS).includes(data.category) ? data.category : 'Vegetables';
+      const tasks = Array.isArray(data.tasks) && data.tasks.length
+        ? data.tasks.map(t => ({ label: t.label || '', sm: Number(t.sm) || 4, em: Number(t.em) || 5, how: t.how || '' }))
+        : [{ label: '', sm: 4, em: 5, how: '' }];
+      this.setState(s => ({
+        draft: { ...s.draft, name: data.name || s.draft.name, sci: data.sci || '', category: cat,
+          light: data.light || '', water: data.water || '', soil: data.soil || '', spacing: data.spacing || '',
+          ongoing: data.ongoing || '', tasks },
+        lookupState: 'done'
+      }));
+    } catch (e) {
+      this.setState({ lookupState: 'error', lookupError: "Couldn't fetch details — fill in manually or try again." });
+    }
+  }
+  closeForm() { this.setState({ showForm: false, draft: null }); }
+  setDraft(field, val) { this.setState(s => ({ draft: { ...s.draft, [field]: val } })); }
+  setTask(i, field, val) {
+    this.setState(s => ({ draft: { ...s.draft, tasks: s.draft.tasks.map((t, j) => j === i ? { ...t, [field]: val } : t) } }));
+  }
+  addTaskRow() { this.setState(s => ({ draft: { ...s.draft, tasks: [...s.draft.tasks, { label: '', sm: 4, em: 5, how: '' }] } })); }
+  removeTaskRow(i) { this.setState(s => ({ draft: { ...s.draft, tasks: s.draft.tasks.filter((t, j) => j !== i) } })); }
+
+  saveCustomPlant() {
+    const d = this.state.draft;
+    if (!d || !d.name.trim()) return;
+    const id = 'custom-' + Date.now();
+    const lastDay = m => new Date(2024, m, 0).getDate();
+    const plant = {
+      id, name: d.name.trim(), sci: d.sci.trim(), category: d.category, type: d.category, photo: '',
+      light: d.light.trim() || '—', water: d.water.trim() || '—', soil: d.soil.trim() || '—', spacing: d.spacing.trim() || '—',
+      planting: [], ongoing: d.ongoing.trim(), pests: [], harvestLabel: 'Notes', harvest: '',
+      custom: true,
+      tasks: d.tasks.filter(t => t.label.trim()).map((t, i) => ({
+        id: 't' + (i + 1), label: t.label.trim(),
+        sm: Number(t.sm), sd: 1, em: Number(t.em), ed: lastDay(Number(t.em)),
+        how: t.how.trim() || 'No detailed instructions yet for this task.'
+      }))
+    };
+    this.setState(s => ({
+      custom: [...s.custom, plant],
+      myPlants: [...s.myPlants, { id: id + '-p', catalogId: id, addedAt: Date.now() }],
+      showForm: false, draft: null, screen: 'garden'
+    }), () => this.persist());
+  }
+
+  deleteForever(plantId, catalogId) {
+    this.setState(s => ({
+      myPlants: s.myPlants.filter(x => x.id !== plantId),
+      history: s.history.filter(h => h.id !== plantId),
+      custom: (s.custom || []).filter(c => c.id !== catalogId),
+      detail: null, removeDraft: null
+    }), () => this.persist());
+  }
+
+  fmtDate(m, d) { return MONTHS[m - 1] + ' ' + d; }
+  fmtRange(t) { return this.fmtDate(t.sm, t.sd) + ' – ' + this.fmtDate(t.em, t.ed); }
+
+  computeStatus(t, today, completed, plantId) {
+    const year = new Date(today).getFullYear();
+    const start = new Date(year, t.sm - 1, t.sd).getTime();
+    const end = new Date(year, t.em - 1, t.ed, 23, 59, 59, 999).getTime();
+    const lead = (this.props.reminderLeadDays ?? 6) * 86400000;
+    const key = plantId + '|' + t.id + '|' + year;
+    const done = !!completed[key];
+    let status;
+    if (done) status = 'done';
+    else if (today > end) status = 'passed';
+    else if (today >= start - lead) status = 'due';
+    else status = 'upcoming';
+    return { status, start, end, key, daysUntil: Math.ceil((start - today) / 86400000) };
+  }
+
+  goTo(s) { this.setState({ screen: s, detail: null }); }
+
+  toggleExpandTask(id) { this.setState(s => ({ expandedTaskId: s.expandedTaskId === id ? null : id })); }
+  toggleExpandRem(key) { this.setState(s => ({ expandedRemKey: s.expandedRemKey === key ? null : key })); }
+  toggleExpandCal(key) { this.setState(s => ({ expandedCalKey: s.expandedCalKey === key ? null : key })); }
+
+  calShift(delta) {
+    this.setState(s => {
+      let m = s.calMonth + delta, y = s.calYear;
+      if (m < 0) { m = 11; y -= 1; } else if (m > 11) { m = 0; y += 1; }
+      return { calMonth: m, calYear: y };
+    });
+  }
+  openDetail(catalogId, plantId, source) { this.setState({ detail: { catalogId, plantId, source } }); }
+  closeDetail() { this.setState({ detail: null }); }
+
+  addPlant(catalogId) {
+    if (this.state.myPlants.some(p => p.catalogId === catalogId)) return;
+    const entry = { id: catalogId + '-' + Date.now(), catalogId, addedAt: Date.now() };
+    this.setState(s => ({ myPlants: [...s.myPlants, entry] }), () => this.persist());
+  }
+
+  removePlant(plantId, note) {
+    const p = this.state.myPlants.find(x => x.id === plantId);
+    if (!p) return;
+    this.setState(s => ({
+      myPlants: s.myPlants.filter(x => x.id !== plantId),
+      history: [...s.history, { ...p, removedAt: Date.now(), note: note || '' }],
+      detail: null, removeDraft: null
+    }), () => this.persist());
+  }
+
+  startRemove() { this.setState({ removeDraft: '' }); }
+  cancelRemove() { this.setState({ removeDraft: null }); }
+
+  startEditNote(id, current) { this.setState({ editingNoteId: id, noteEditVal: current || '' }); }
+  cancelEditNote() { this.setState({ editingNoteId: null, noteEditVal: '' }); }
+  saveNote(id) {
+    this.setState(s => ({
+      history: s.history.map(h => h.id === id ? { ...h, note: s.noteEditVal } : h),
+      editingNoteId: null, noteEditVal: ''
+    }), () => this.persist());
+  }
+
+  toggleTask(plantId, taskId, yr) {
+    const year = yr || new Date().getFullYear();
+    const key = plantId + '|' + taskId + '|' + year;
+    this.setState(s => ({ completed: { ...s.completed, [key]: !s.completed[key] } }), () => this.persist());
+  }
+
+  renderVals() {
+    const catalog = this.allPlants();
+    const byId = {};
+    catalog.forEach(c => byId[c.id] = c);
+    const today = Date.now();
+    const completed = this.state.completed;
+    const accent = this.props.accentColor || '#B08D57';
+    const statusColors = {
+      passed: { bg: '#E4DCC2', fg: '#9C9276' },
+      due: { bg: '#E9E0BC', fg: '#8A6A1F' },
+      upcoming: { bg: '#DCE6D4', fg: '#3A5A40' },
+      done: { bg: '#E4DCC2', fg: '#6B5A3A' }
+    };
+    const statusLabel = { passed: 'Past', due: 'Due now', upcoming: 'Upcoming', done: 'Done' };
+
+    const mine = this.state.myPlants.filter(p => byId[p.catalogId]);
+
+    // GARDEN
+    const gardenPlants = mine.map(p => {
+      const cat = byId[p.catalogId];
+      const statuses = cat.tasks.map(t => ({ ...t, ...this.computeStatus(t, today, completed, p.id) }));
+      const activeCount = statuses.filter(s => s.status === 'due').length;
+      const upcoming = statuses.filter(s => s.status === 'upcoming').sort((a, b) => a.start - b.start)[0];
+      const badgeText = activeCount ? (activeCount + (activeCount > 1 ? ' tasks need attention' : ' task needs attention')) : (upcoming ? 'Next: ' + this.fmtDate(upcoming.sm, upcoming.sd) : 'All caught up');
+      return {
+        id: p.id, catalogId: p.catalogId, name: cat.name, initial: cat.name.charAt(0),
+        catColor: CAT_COLORS[cat.category] || '#8B7355',
+        badgeText, badgeColor: activeCount ? '#8B4A3A' : '#6B5A3A',
+        category: cat.category,
+        onOpen: () => this.openDetail(p.catalogId, p.id, 'garden')
+      };
+    });
+
+    const catOrder = Object.keys(CAT_COLORS);
+    const seenCats = [];
+    gardenPlants.forEach(g => { if (!seenCats.includes(g.category)) seenCats.push(g.category); });
+    seenCats.sort((a, b) => {
+      const ia = catOrder.indexOf(a), ib = catOrder.indexOf(b);
+      return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib) || a.localeCompare(b);
+    });
+    const gardenGroups = seenCats.map(c => {
+      const plants = gardenPlants.filter(g => g.category === c);
+      return { category: c, color: CAT_COLORS[c] || '#8B7355', count: plants.length + (plants.length === 1 ? ' plant' : ' plants'), plants };
+    });
+
+    // REMINDERS
+    let remActive = [];
+    let remDone = [];
+    const curYear = new Date(today).getFullYear();
+    mine.forEach(p => {
+      const cat = byId[p.catalogId];
+      cat.tasks.forEach(t => {
+        const st = this.computeStatus(t, today, completed, p.id);
+        const row = {
+          key: p.id + '-' + t.id, plantName: cat.name, label: t.label + ' (' + curYear + ')', range: this.fmtRange(t),
+          badgeText: statusLabel[st.status], badgeBg: statusColors[st.status].bg, badgeFg: statusColors[st.status].fg,
+          stripeColor: st.status === 'due' ? '#B08D57' : '#7C8B5E',
+          onToggle: (ev) => { if (ev && ev.stopPropagation) ev.stopPropagation(); this.toggleTask(p.id, t.id); },
+          onUndo: (ev) => { if (ev && ev.stopPropagation) ev.stopPropagation(); this.toggleTask(p.id, t.id); },
+          onOpen: () => this.toggleExpandRem(p.id + '-' + t.id),
+          expanded: this.state.expandedRemKey === (p.id + '-' + t.id), how: t.how || 'No detailed instructions yet for this task.',
+          sortKey: st.status === 'due' ? 0 : 1, start: st.start
+        };
+        if (st.status === 'done') remDone.push(row);
+        else if (st.status === 'passed') return;
+        else if (st.status === 'due' || st.daysUntil <= 21) remActive.push(row);
+      });
+    });
+    remActive.sort((a, b) => a.sortKey - b.sortKey || a.start - b.start);
+
+    // HISTORY
+    const historyList = [...this.state.history].filter(h => byId[h.catalogId]).reverse().map(h => {
+      const cat = byId[h.catalogId];
+      const editing = this.state.editingNoteId === h.id;
+      return {
+        id: h.id, name: cat.name, initial: cat.name.charAt(0), catColor: CAT_COLORS[cat.category] || '#8B7355',
+        removedAtStr: new Date(h.removedAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }),
+        onOpen: () => this.openDetail(h.catalogId, null, 'history'),
+        onAddBack: (ev) => { if (ev && ev.stopPropagation) ev.stopPropagation(); this.addPlant(h.catalogId); },
+        editing, notEditing: !editing,
+        noteDisplay: h.note ? h.note : '+ Add a note on why it was removed',
+        noteColor: h.note ? '#3A4A2E' : '#9C9276',
+        noteEditVal: editing ? this.state.noteEditVal : (h.note || ''),
+        onNoteInput: e => this.setState({ noteEditVal: e.target.value }),
+        onEditNote: (ev) => { if (ev && ev.stopPropagation) ev.stopPropagation(); this.startEditNote(h.id, h.note); },
+        onSaveNote: (ev) => { if (ev && ev.stopPropagation) ev.stopPropagation(); this.saveNote(h.id); },
+        onCancelEditNote: (ev) => { if (ev && ev.stopPropagation) ev.stopPropagation(); this.cancelEditNote(); },
+        onDelete: (ev) => { if (ev && ev.stopPropagation) ev.stopPropagation(); this.deleteForever(h.id, h.catalogId); }
+      };
+    });
+
+    // DETAIL
+    let detail = null;
+    if (this.state.detail && byId[this.state.detail.catalogId]) {
+      const d = this.state.detail;
+      const cat = byId[d.catalogId];
+      const activePlant = this.state.myPlants.find(p => p.catalogId === cat.id);
+      const inGarden = !!activePlant;
+      const tasksStatus = cat.tasks.map(t => {
+        const st = this.computeStatus(t, today, completed, activePlant ? activePlant.id : cat.id);
+        return {
+          ...t, range: this.fmtRange(t), badgeText: statusLabel[st.status],
+          badgeBg: statusColors[st.status].bg, badgeFg: statusColors[st.status].fg,
+          isDone: st.status === 'done', checkBg: st.status === 'done' ? accent : 'transparent',
+          onToggle: (ev) => { if (ev && ev.stopPropagation) ev.stopPropagation(); this.toggleTask(activePlant ? activePlant.id : cat.id, t.id); },
+          expanded: this.state.expandedTaskId === t.id, how: t.how || 'No detailed instructions yet for this task.',
+          onExpand: () => this.toggleExpandTask(t.id)
+        };
+      });
+      const removing = this.state.removeDraft !== null;
+      detail = {
+        ...cat, source: d.source, inGarden,
+        photoSlotId: 'photo-' + cat.id,
+        facts: [{ l: 'Light', v: cat.light }, { l: 'Water', v: cat.water }, { l: 'Soil', v: cat.soil }, { l: 'Spacing', v: cat.spacing }],
+        pests: (cat.pests || []).map(p => ({ issue: p[0], fix: p[1] })),
+        planting: cat.planting || [],
+        hasPlanting: (cat.planting || []).length > 0,
+        hasPests: (cat.pests || []).length > 0,
+        hasOngoing: !!cat.ongoing,
+        hasHarvest: !!cat.harvest,
+        hasTasks: (cat.tasks || []).length > 0,
+        onDeleteForever: () => this.deleteForever(activePlant ? activePlant.id : null, cat.id),
+        tasksStatus,
+        showAdd: !inGarden,
+        addLabel: d.source === 'history' ? 'Add back to garden' : 'Add to garden',
+        onAdd: () => this.addPlant(cat.id),
+        removing, notRemoving: !removing, removeDraft: this.state.removeDraft || '',
+        onStartRemove: () => this.startRemove(),
+        onCancelRemove: () => this.cancelRemove(),
+        onRemoveDraftInput: e => this.setState({ removeDraft: e.target.value }),
+        onConfirmRemove: () => this.removePlant(activePlant ? activePlant.id : null, this.state.removeDraft),
+        onBack: () => this.closeDetail()
+      };
+    }
+
+    const remBadgeCount = remActive.filter(r => r.badgeText !== 'Upcoming').length;
+    const soonCount = remActive.filter(r => r.badgeText === 'Upcoming').length;
+    document.title = remBadgeCount > 0 ? '(' + remBadgeCount + ') Garden' : 'Garden';
+    if (this.lastBadgeCount !== remBadgeCount) this.pushBadge(remBadgeCount);
+    const notifyOn = this.state.notifyState === 'granted';
+
+    // CALENDAR
+    const calMonth = this.state.calMonth, calYear = this.state.calYear;
+    const monthStart = new Date(calYear, calMonth, 1).getTime();
+    const monthEnd = new Date(calYear, calMonth + 1, 0, 23, 59, 59, 999).getTime();
+    const isRealNow = curYear === calYear;
+    let calTasks = [];
+    mine.forEach(p => {
+      const cat = byId[p.catalogId];
+      cat.tasks.forEach(t => {
+        const rangeStart = new Date(calYear, t.sm - 1, t.sd).getTime();
+        const rangeEnd = new Date(calYear, t.em - 1, t.ed, 23, 59, 59, 999).getTime();
+        if (rangeEnd < monthStart || rangeStart > monthEnd) return;
+        const key = p.id + '|' + t.id + '|' + calYear;
+        const done = !!completed[key];
+        let status = 'scheduled';
+        if (done) status = 'done';
+        else if (isRealNow) {
+          const lead = (this.props.reminderLeadDays ?? 6) * 86400000;
+          if (today > rangeEnd) status = 'passed';
+          else if (today >= rangeStart - lead) status = 'due';
+          else status = 'upcoming';
+        }
+        if (status === 'passed') return;
+        const sc = statusColors[status] || { bg: '#E4DCC2', fg: '#6B5A3A' };
+        const dispStart = Math.max(rangeStart, monthStart);
+        calTasks.push({
+          plantName: cat.name, label: t.label + ' (' + calYear + ')',
+          day: new Date(dispStart).getDate(), mon: MONTHS[new Date(dispStart).getMonth()],
+          badgeText: status === 'scheduled' ? 'Scheduled' : statusLabel[status],
+          badgeBg: sc.bg, badgeFg: sc.fg,
+          stripeColor: status === 'due' ? '#B08D57' : '#7C8B5E',
+          sortStart: dispStart,
+          isDone: done, checkBg: done ? accent : 'transparent',
+          onToggle: (ev) => { if (ev && ev.stopPropagation) ev.stopPropagation(); this.toggleTask(p.id, t.id, calYear); },
+          onOpen: () => this.toggleExpandCal(p.id + '-' + t.id + '-' + calYear),
+          expanded: this.state.expandedCalKey === (p.id + '-' + t.id + '-' + calYear), how: t.how || 'No detailed instructions yet for this task.'
+        });
+      });
+    });
+    calTasks.sort((a, b) => a.sortStart - b.sortStart);
+
+    // ADD SCREEN
+    const inGardenIds = new Set(this.state.myPlants.map(p => p.catalogId));
+    const addable = this.allPlants().filter(c => !inGardenIds.has(c.id)).map(c => ({
+      id: c.id, name: c.name, sci: c.sci || c.category, initial: c.name.charAt(0),
+      catColor: CAT_COLORS[c.category] || '#8B7355',
+      onAdd: () => { this.addPlant(c.id); this.setState({ screen: 'garden' }); }
+    }));
+    const d = this.state.draft;
+    const monthOptions = MONTHS.map((m, i) => ({ v: i + 1, n: m }));
+    const formTasks = (d ? d.tasks : []).map((t, i) => ({
+      label: t.label, how: t.how, sm: t.sm, em: t.em, num: 'Task ' + (i + 1),
+      onLabel: e => this.setTask(i, 'label', e.target.value),
+      onHow: e => this.setTask(i, 'how', e.target.value),
+      onStart: e => this.setTask(i, 'sm', e.target.value),
+      onEnd: e => this.setTask(i, 'em', e.target.value),
+      onRemove: () => this.removeTaskRow(i)
+    }));
+
+    return {
+      accent,
+      isAdd: this.state.screen === 'add',
+      goAdd: () => this.setState({ screen: 'add', showForm: false, draft: null }),
+      backFromAdd: () => this.setState({ screen: 'garden', showForm: false, draft: null }),
+      addable, noAddable: addable.length === 0,
+      showForm: this.state.showForm, formClosed: !this.state.showForm,
+      onOpenForm: () => this.openForm(),
+      onCloseForm: () => this.closeForm(),
+      onSaveCustom: () => this.saveCustomPlant(),
+      categoryOptions: Object.keys(CAT_COLORS),
+      monthOptions, formTasks,
+      onAddTaskRow: () => this.addTaskRow(),
+      fName: d ? d.name : '', fSci: d ? d.sci : '', fCategory: d ? d.category : 'Vegetables',
+      fLight: d ? d.light : '', fWater: d ? d.water : '', fSoil: d ? d.soil : '', fSpacing: d ? d.spacing : '', fOngoing: d ? d.ongoing : '',
+      onFName: e => this.setDraft('name', e.target.value),
+      onFSci: e => this.setDraft('sci', e.target.value),
+      onFCategory: e => this.setDraft('category', e.target.value),
+      onFLight: e => this.setDraft('light', e.target.value),
+      onFWater: e => this.setDraft('water', e.target.value),
+      onFSoil: e => this.setDraft('soil', e.target.value),
+      onFSpacing: e => this.setDraft('spacing', e.target.value),
+      onFOngoing: e => this.setDraft('ongoing', e.target.value),
+      onLookup: () => this.lookupPlant(),
+      lookupLoading: this.state.lookupState === 'loading',
+      lookupIdle: this.state.lookupState !== 'loading',
+      lookupDone: this.state.lookupState === 'done',
+      lookupHasError: this.state.lookupState === 'error',
+      lookupError: this.state.lookupError,
+      lookupOpacity: (d && d.name && d.name.trim()) ? 1 : 0.45,
+      detail, noDetail: !this.state.detail,
+      isGarden: this.state.screen === 'garden', isReminders: this.state.screen === 'reminders',
+      isHistory: this.state.screen === 'history', isCalendar: this.state.screen === 'calendar',
+      calLabel: MONTHS[calMonth] + ' ' + calYear, calTasks, noCalTasks: calTasks.length === 0,
+      calPrev: () => this.calShift(-1), calNext: () => this.calShift(1),
+      goCalendar: () => this.goTo('calendar'),
+      tabCalendarColor: this.state.screen === 'calendar' ? accent : '#9C9276',
+      gardenPlants, gardenGroups, noGarden: gardenPlants.length === 0,
+      gardenCountText: gardenPlants.length + (gardenPlants.length === 1 ? ' plant' : ' plants'),
+      remActive, noRem: remActive.length === 0, remDone, hasDone: remDone.length > 0,
+      hasRemBadge: remBadgeCount > 0,
+      showInstallCard: !notifyOn && !this.state.installDismissed,
+      installTitle: this.state.standalone ? 'Turn on badge reminders' : 'Add Garden to your Home Screen',
+      installBody: this.state.standalone
+        ? 'Allow notifications and the app icon will carry a red number whenever tasks are due.'
+        : 'Tap Share, then “Add to Home Screen”. Opened from the icon, the app can badge itself with the number of tasks due.',
+      installCta: this.state.standalone ? 'Allow notifications' : 'Allow notifications now',
+      onEnableNotify: () => this.enableNotifications(),
+      onDismissInstall: (ev) => { if (ev && ev.stopPropagation) ev.stopPropagation(); this.setState({ installDismissed: true }); },
+      notifyOn,
+      onExportCal: () => this.exportCalendar(),
+      alarmLabel: this.state.alarmMode === 'none' ? 'Alerts off — badge only' : 'Alerts at 9am',
+      alarmChipBg: this.state.alarmMode === 'none' ? '#E4DCC2' : '#DCE6D4',
+      alarmChipBorder: this.state.alarmMode === 'none' ? '#C9BE9E' : '#B7C4A8',
+      alarmChipFg: this.state.alarmMode === 'none' ? '#6B5A3A' : '#3A5A40',
+      onToggleAlarm: () => this.setState(s => ({ alarmMode: s.alarmMode === 'none' ? '9am' : 'none' }), () => this.persist()),
+      exported: this.state.exported, notExported: !this.state.exported,
+      remBadgeCount: remBadgeCount > 99 ? '99+' : String(remBadgeCount),
+      showAlert: remBadgeCount > 0 && this.state.alertDismissed !== remBadgeCount,
+      alertTitle: remBadgeCount === 1 ? '1 task needs doing' : remBadgeCount + ' tasks need doing',
+      alertSub: soonCount > 0 ? (soonCount === 1 ? 'and 1 more coming up soon' : 'and ' + soonCount + ' more coming up soon') : 'Tap to see what to do',
+      onAlertOpen: () => this.setState({ screen: 'reminders', detail: null }),
+      onAlertDismiss: (ev) => { if (ev && ev.stopPropagation) ev.stopPropagation(); this.setState({ alertDismissed: remBadgeCount }); },
+      historyList, noHistory: historyList.length === 0,
+      goGarden: () => this.goTo('garden'), goReminders: () => this.goTo('reminders'),
+      goHistory: () => this.goTo('history'),
+      tabGardenColor: this.state.screen === 'garden' ? accent : '#9C9276',
+      tabRemindersColor: this.state.screen === 'reminders' ? accent : '#9C9276',
+      tabHistoryColor: this.state.screen === 'history' ? accent : '#9C9276',
+      safeTop: 54
+    };
+  }
+}
+
+</script>
+</body>
+</html>
